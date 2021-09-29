@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: iss-web
+spec:
+  entryPoints:
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`iss-web`) || Host(`app1.default.svc.local`)
+    services:
+    - kind: Service
+      name: iss-web-service
+      port: 80

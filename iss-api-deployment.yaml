@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iis-api-deployment
+  labels:
+    app: iis-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iis-api
+  template:
+    metadata:
+      labels:
+        app: iis-api
+    spec:
+      containers:
+      - name: iis-api
+        image: mannetjie/iss-api:latest
+        ports:
+        - containerPort: 5000

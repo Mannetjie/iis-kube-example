@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: iss-web-service
+spec:
+  selector:
+    app: iss-web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

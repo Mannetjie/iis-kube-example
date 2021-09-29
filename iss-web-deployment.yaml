@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iss-web-deployment
+  labels:
+    app: iss-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iss-web
+  template:
+    metadata:
+      labels:
+        app: iss-web
+    spec:
+      containers:
+      - name: iss-web
+        image: mannetjie/iss-web:latest
+        ports:
+        - containerPort: 8080

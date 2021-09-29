@@ -1,0 +1,86 @@
+<html>
+<head>
+ <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
+ <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
+ <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+ <style>
+ .marker {
+  background-image: url("/static/iss4.png");
+  background-size: cover;
+  width: 51px;
+  height: 49px;
+  cursor: pointer;
+ }
+ </style>
+</head>
+<body>
+  <div id='map' style='width: 500px; height: 400px;'></div>
+</body>
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoibWFubmV0amllIiwiYSI6ImNrdGU1YjZxazA2c28ydW1wZW96eWxrbnIifQ.kPuuCz_DSDC68NM_U4pBoQ';
+var map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/streets-v11',
+  center: [-28.5738, -69.1593],
+  zoom: 3
+});
+
+var geojson = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [-77.032, 38.913]
+      },
+      properties: {
+        title: 'Mapbox',
+        description: 'Washington, D.C.'
+      }
+    }
+  ]
+};
+
+function displayISS(data){
+  console.log(data);
+  var iisDiv = document.getElementById("issElement");
+  if(iisDiv != null){
+  	iisDiv.remove();
+  }
+  
+  for (const { geometry, properties } of data.features) {
+    // create a HTML element for each feature
+    var el = document.createElement('div');
+    el.className = 'marker';
+    el.id = "issElement";
+
+    // make a marker for each feature and add to the map
+    new mapboxgl.Marker(el).setLngLat(geometry.coordinates).addTo(map);
+  }
+  map.flyTo({
+    center: data.features[0].geometry.coordinates
+  });
+}
+
+function timeout() {
+  setTimeout(function () {
+	var myRequest = new Request("{{ url_for('apiCall') }}");
+    fetch(myRequest)
+	.then(function(response) {
+  	  if (!response.ok) {
+    	throw new Error("HTTP error! status:" + response.status);
+  	  }
+  	  return response.json();
+	})
+	.then(function(data) {
+	  displayISS(data);
+	});
+
+    timeout();
+  }, 2000);
+}
+
+timeout();
+</script>
+</html>
